@@ -28,7 +28,6 @@ namespace XamarinBluetoothScanner.Droid
             base.OnCreate(savedInstanceState);
             SetContentView(Resource.Layout.activity_main);
             listview = FindViewById<ListView>(Resource.Id.myListView);
-            Console.WriteLine("OnCreate");
             scan();
 
             deviceItems.Add(new DeviceItem()
