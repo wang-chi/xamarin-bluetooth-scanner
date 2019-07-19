@@ -1,19 +1,25 @@
-﻿using System;
-
-using Android.App;
+﻿using Android.App;
 using Android.Content.PM;
-using Android.Runtime;
+using Android.OS;
+using Android.Support.V7.App;
 using Android.Views;
 using Android.Widget;
-using Android.OS;
+using Plugin.BLE;
+using Plugin.BLE.Abstractions.Contracts;
+using Plugin.BLE.Abstractions.EventArgs;
+using System;
 using System.Collections.Generic;
 
 namespace XamarinBluetoothScanner.Droid
 {
     [Activity(Label = "XamarinBluetoothScanner", Icon = "@mipmap/icon", Theme = "@style/MainTheme", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation)]
-    public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsAppCompatActivity
+    public class MainActivity : AppCompatActivity
     {
+        IBluetoothLE _bluetooth = CrossBluetoothLE.Current;
+        Plugin.BLE.Abstractions.Contracts.IAdapter _adapter = CrossBluetoothLE.Current.Adapter;
+
         private int _rssiThreshold = -50;
+
         List<DeviceItem> deviceItems = new List<DeviceItem>();
         ListView listview;
 
@@ -22,6 +28,8 @@ namespace XamarinBluetoothScanner.Droid
             base.OnCreate(savedInstanceState);
             SetContentView(Resource.Layout.activity_main);
             listview = FindViewById<ListView>(Resource.Id.myListView);
+            Console.WriteLine("OnCreate");
+            scan();
 
             deviceItems.Add(new DeviceItem()
             {
@@ -35,6 +43,33 @@ namespace XamarinBluetoothScanner.Droid
             });
             listview.Adapter = new DeviceAdapter(this, deviceItems);
 
+        }
+        public async void scan()
+        {
+            this._adapter.ScanTimeout = 3000;
+            this._adapter.DeviceDiscovered += this.DeviceDiscovered;
+            if (!this._adapter.IsScanning)
+            {
+                await this._adapter.StartScanningForDevicesAsync();
+            }
+        }
+
+        private void DeviceDiscovered(object sender, DeviceEventArgs args)
+        {
+            this._adapter.DeviceDiscovered += (s, a) =>
+            {
+
+                if (a.Device.Rssi > _rssiThreshold && a.Device.Rssi < 0)
+                {
+                    Console.WriteLine(">> BeaconScan(): Find device UUID: {0} RSSI: {1}", a.Device.Id, a.Device.Rssi);
+                    deviceItems.Add(new DeviceItem()
+                    {
+                        DeviceName = a.Device.Name.ToString(),
+                        DeviceId = a.Device.Id.ToString()
+                    });
+                }
+
+            };
         }
 
         public class DeviceItem

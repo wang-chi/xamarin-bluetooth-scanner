@@ -2,7 +2,6 @@ D:\xamarin-bluetooth-scanner\XamarinBluetoothScanner\XamarinBluetoothScanner\bin
 D:\xamarin-bluetooth-scanner\XamarinBluetoothScanner\XamarinBluetoothScanner\bin\Debug\netstandard2.0\XamarinBluetoothScanner.dll
 D:\xamarin-bluetooth-scanner\XamarinBluetoothScanner\XamarinBluetoothScanner\bin\Debug\netstandard2.0\ref\XamarinBluetoothScanner.dll
 D:\xamarin-bluetooth-scanner\XamarinBluetoothScanner\XamarinBluetoothScanner\bin\Debug\netstandard2.0\XamarinBluetoothScanner.pdb
-D:\xamarin-bluetooth-scanner\XamarinBluetoothScanner\XamarinBluetoothScanner\obj\Debug\netstandard2.0\XamarinBluetoothScanner.csprojAssemblyReference.cache
 D:\xamarin-bluetooth-scanner\XamarinBluetoothScanner\XamarinBluetoothScanner\obj\Debug\netstandard2.0\App.xaml.g.cs
 D:\xamarin-bluetooth-scanner\XamarinBluetoothScanner\XamarinBluetoothScanner\obj\Debug\netstandard2.0\MainPage.xaml.g.cs
 D:\xamarin-bluetooth-scanner\XamarinBluetoothScanner\XamarinBluetoothScanner\obj\Debug\netstandard2.0\XamarinBluetoothScanner.csproj.CoreCompileInputs.cache

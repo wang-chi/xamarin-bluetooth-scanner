@@ -112,6 +112,8 @@ class MonoPackageManager_Resources {
 		/* We need to ensure that "XamarinBluetoothScanner.Android.dll" comes first in this list. */
 		"XamarinBluetoothScanner.Android.dll",
 		"FormsViewGroup.dll",
+		"Plugin.BLE.Abstractions.dll",
+		"Plugin.BLE.dll",
 		"Xamarin.Android.Arch.Core.Common.dll",
 		"Xamarin.Android.Arch.Core.Runtime.dll",
 		"Xamarin.Android.Arch.Lifecycle.Common.dll",

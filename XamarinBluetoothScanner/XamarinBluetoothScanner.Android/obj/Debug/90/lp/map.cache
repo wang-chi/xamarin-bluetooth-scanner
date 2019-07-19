@@ -1,4 +1,6 @@
 FormsViewGroup
+Plugin.BLE.Abstractions
+Plugin.BLE
 System.Runtime
 Xamarin.Android.Arch.Core.Common
 Xamarin.Android.Arch.Core.Runtime
@@ -46,3 +48,4 @@ Xamarin.Forms.Platform
 Xamarin.Forms.Xaml
 XamarinBluetoothScanner
 netstandard
+System.Resources.ResourceManager
