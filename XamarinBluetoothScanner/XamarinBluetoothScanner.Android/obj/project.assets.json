@@ -2,15 +2,27 @@
   "version": 3,
   "targets": {
     "MonoAndroid,Version=v9.0": {
-      "Plugin.BLE/1.3.0": {
+      "Monkey.Robotics/0.5.2": {
         "type": "package",
+        "dependencies": {
+          "Newtonsoft.Json": "6.0.8"
+        },
         "compile": {
-          "lib/MonoAndroid/Plugin.BLE.Abstractions.dll": {},
-          "lib/MonoAndroid/Plugin.BLE.dll": {}
+          "lib/MonoAndroid10/Robotics.Mobile.Core.Droid.dll": {},
+          "lib/MonoAndroid10/Robotics.Mobile.Core.dll": {}
         },
         "runtime": {
-          "lib/MonoAndroid/Plugin.BLE.Abstractions.dll": {},
-          "lib/MonoAndroid/Plugin.BLE.dll": {}
+          "lib/MonoAndroid10/Robotics.Mobile.Core.Droid.dll": {},
+          "lib/MonoAndroid10/Robotics.Mobile.Core.dll": {}
+        }
+      },
+      "Newtonsoft.Json/6.0.8": {
+        "type": "package",
+        "compile": {
+          "lib/portable-net40+sl5+wp80+win8+wpa81/Newtonsoft.Json.dll": {}
+        },
+        "runtime": {
+          "lib/portable-net40+sl5+wp80+win8+wpa81/Newtonsoft.Json.dll": {}
         }
       },
       "System.Numerics.Vectors/4.5.0": {
@@ -869,35 +881,48 @@
     }
   },
   "libraries": {
-    "Plugin.BLE/1.3.0": {
-      "sha512": "5sD/YwTADSWES04iY28+Wc2alvq5kdPeH24oZuQxNiDTL0eAyxioJWdQ0JuKH6GyWNd9Zmv5006sgYcbNVwSwQ==",
+    "Monkey.Robotics/0.5.2": {
+      "sha512": "HDPpy8Ph2XajKYFoD9LtOQ6r1JuybyRU2uMGs/lNuvyjRxiO/0R5rXM7f1JjHXbAn6YFEDWFjCVKPqLc8AzOpA==",
       "type": "package",
-      "path": "plugin.ble/1.3.0",
+      "path": "monkey.robotics/0.5.2",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
-        "lib/MonoAndroid/Plugin.BLE.Abstractions.XML",
-        "lib/MonoAndroid/Plugin.BLE.Abstractions.dll",
-        "lib/MonoAndroid/Plugin.BLE.Abstractions.dll.mdb",
-        "lib/MonoAndroid/Plugin.BLE.Abstractions.pdb",
-        "lib/MonoAndroid/Plugin.BLE.XML",
-        "lib/MonoAndroid/Plugin.BLE.dll",
-        "lib/MonoAndroid/Plugin.BLE.dll.mdb",
-        "lib/MonoAndroid/Plugin.BLE.pdb",
-        "lib/Xamarin.iOS10/Plugin.BLE.Abstractions.XML",
-        "lib/Xamarin.iOS10/Plugin.BLE.Abstractions.dll",
-        "lib/Xamarin.iOS10/Plugin.BLE.Abstractions.pdb",
-        "lib/Xamarin.iOS10/Plugin.BLE.XML",
-        "lib/Xamarin.iOS10/Plugin.BLE.dll",
-        "lib/Xamarin.iOS10/Plugin.BLE.pdb",
-        "lib/portable-net45+win8+wpa81+wp8/Plugin.BLE.Abstractions.XML",
-        "lib/portable-net45+win8+wpa81+wp8/Plugin.BLE.Abstractions.dll",
-        "lib/portable-net45+win8+wpa81+wp8/Plugin.BLE.Abstractions.pdb",
-        "lib/portable-net45+win8+wpa81+wp8/Plugin.BLE.XML",
-        "lib/portable-net45+win8+wpa81+wp8/Plugin.BLE.dll",
-        "lib/portable-net45+win8+wpa81+wp8/Plugin.BLE.pdb",
-        "plugin.ble.1.3.0.nupkg.sha512",
-        "plugin.ble.nuspec"
+        "lib/MonoAndroid10/Robotics.Mobile.Core.Droid.dll",
+        "lib/MonoAndroid10/Robotics.Mobile.Core.dll",
+        "lib/MonoTouch10/Robotics.Mobile.Core.dll",
+        "lib/MonoTouch10/Robotics.Mobile.Core.iOS.dll",
+        "lib/Xamarin.iOS10/Robotics.Mobile.Core.dll",
+        "lib/Xamarin.iOS10/Robotics.Mobile.Core.iOS.dll",
+        "monkey.robotics.0.5.2.nupkg.sha512",
+        "monkey.robotics.nuspec"
+      ]
+    },
+    "Newtonsoft.Json/6.0.8": {
+      "sha512": "7ut47NDedTW19EbL0JpFDYUP62fcuz27hJrehCDNajdCS5NtqL+E39+7Um3OkNc2wl2ym7K8Ln5eNuLus6mVGQ==",
+      "type": "package",
+      "path": "newtonsoft.json/6.0.8",
+      "hasTools": true,
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "lib/net20/Newtonsoft.Json.dll",
+        "lib/net20/Newtonsoft.Json.xml",
+        "lib/net35/Newtonsoft.Json.dll",
+        "lib/net35/Newtonsoft.Json.xml",
+        "lib/net40/Newtonsoft.Json.dll",
+        "lib/net40/Newtonsoft.Json.xml",
+        "lib/net45/Newtonsoft.Json.dll",
+        "lib/net45/Newtonsoft.Json.xml",
+        "lib/netcore45/Newtonsoft.Json.dll",
+        "lib/netcore45/Newtonsoft.Json.xml",
+        "lib/portable-net40+sl5+wp80+win8+wpa81/Newtonsoft.Json.dll",
+        "lib/portable-net40+sl5+wp80+win8+wpa81/Newtonsoft.Json.xml",
+        "lib/portable-net45+wp80+win8+wpa81+aspnetcore50/Newtonsoft.Json.dll",
+        "lib/portable-net45+wp80+win8+wpa81+aspnetcore50/Newtonsoft.Json.xml",
+        "newtonsoft.json.6.0.8.nupkg.sha512",
+        "newtonsoft.json.nuspec",
+        "tools/install.ps1"
       ]
     },
     "System.Numerics.Vectors/4.5.0": {
@@ -2032,7 +2057,7 @@
   },
   "projectFileDependencyGroups": {
     "MonoAndroid,Version=v9.0": [
-      "Plugin.BLE >= 1.3.0",
+      "Monkey.Robotics >= 0.5.2",
       "Xamarin.Android.Support.Core.Utils >= 28.0.0.1",
       "Xamarin.Android.Support.CustomTabs >= 28.0.0.1",
       "Xamarin.Android.Support.Design >= 28.0.0.1",
@@ -2087,9 +2112,9 @@
     "frameworks": {
       "monoandroid90": {
         "dependencies": {
-          "Plugin.BLE": {
+          "Monkey.Robotics": {
             "target": "Package",
-            "version": "[1.3.0, )"
+            "version": "[0.5.2, )"
           },
           "Xamarin.Android.Support.Core.Utils": {
             "target": "Package",

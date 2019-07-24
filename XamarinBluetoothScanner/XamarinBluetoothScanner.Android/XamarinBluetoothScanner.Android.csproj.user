@@ -3,5 +3,6 @@
   <PropertyGroup>
     <SelectedDevice>HTC _M9pw</SelectedDevice>
     <AndroidDesignerPreferredDevice>Nexus 4</AndroidDesignerPreferredDevice>
+    <DefaultDevice>nexus_5x</DefaultDevice>
   </PropertyGroup>
 </Project>

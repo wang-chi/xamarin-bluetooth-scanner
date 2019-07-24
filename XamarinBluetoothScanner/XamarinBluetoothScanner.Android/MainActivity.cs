@@ -1,74 +1,69 @@
 ﻿using Android.App;
+using Android.Bluetooth;
 using Android.Content.PM;
 using Android.OS;
-using Android.Support.V7.App;
 using Android.Views;
 using Android.Widget;
-using Plugin.BLE;
-using Plugin.BLE.Abstractions.Contracts;
-using Plugin.BLE.Abstractions.EventArgs;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace XamarinBluetoothScanner.Droid
 {
     [Activity(Label = "XamarinBluetoothScanner", Icon = "@mipmap/icon", Theme = "@style/MainTheme", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation)]
-    public class MainActivity : AppCompatActivity
+    public class MainActivity : Activity, BluetoothAdapter.ILeScanCallback
     {
-        IBluetoothLE _bluetooth = CrossBluetoothLE.Current;
-        Plugin.BLE.Abstractions.Contracts.IAdapter _adapter = CrossBluetoothLE.Current.Adapter;
-
-        private int _rssiThreshold = -50;
-
+        Button _buttonScanBle;
+        protected BluetoothAdapter _adapter;
+        protected BluetoothManager _manager;
         List<DeviceItem> deviceItems = new List<DeviceItem>();
         ListView listview;
+
+        private bool isScan = false;
 
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
             SetContentView(Resource.Layout.activity_main);
             listview = FindViewById<ListView>(Resource.Id.myListView);
-            scan();
+            _buttonScanBle = FindViewById<Button>(Resource.Id.buttonSearchBle);
+            _buttonScanBle.Click += btnScanDevice;
 
-            deviceItems.Add(new DeviceItem()
-            {
-                DeviceName = "null",
-                DeviceId = "000000"
-            });
-            deviceItems.Add(new DeviceItem()
-            {
-                DeviceName = "null",
-                DeviceId = "000001"
-            });
+            this._manager = (BluetoothManager)this.GetSystemService("bluetooth");
+            this._adapter = this._manager.Adapter;
+
             listview.Adapter = new DeviceAdapter(this, deviceItems);
-
         }
-        public async void scan()
+
+        public void btnScanDevice(object sender, EventArgs e)
         {
-            this._adapter.ScanTimeout = 3000;
-            this._adapter.DeviceDiscovered += this.DeviceDiscovered;
-            if (!this._adapter.IsScanning)
+            if (isScan)
             {
-                await this._adapter.StartScanningForDevicesAsync();
+                this._adapter.StopLeScan(this);
+                _buttonScanBle.Text = "Start Scan";
             }
+            else
+            {
+                this._adapter.StartLeScan(this);
+                _buttonScanBle.Text = "Stop Scan";
+
+            }
+            isScan = !isScan;
         }
 
-        private void DeviceDiscovered(object sender, DeviceEventArgs args)
+        public void OnLeScan(BluetoothDevice bleDevice, int rssi, byte[] scanRecord)
         {
-            this._adapter.DeviceDiscovered += (s, a) =>
+            string tempUUID = BitConverter.ToString(scanRecord);
+            string identifierUUID = ExtractBeaconUUID(tempUUID);
+            Console.WriteLine("\n >> Find A Beacon[{0}] Id:{1}; RSSI:{2}; Record:{3}\n", 0, bleDevice.Address, rssi, identifierUUID);
+            if (identifierUUID.Length >= 36)
             {
-
-                if (a.Device.Rssi > _rssiThreshold && a.Device.Rssi < 0)
+                deviceItems.Add(new DeviceItem()
                 {
-                    Console.WriteLine(">> BeaconScan(): Find device UUID: {0} RSSI: {1}", a.Device.Id, a.Device.Rssi);
-                    deviceItems.Add(new DeviceItem()
-                    {
-                        DeviceName = a.Device.Name.ToString(),
-                        DeviceId = a.Device.Id.ToString()
-                    });
-                }
-
-            };
+                    DeviceName = bleDevice.Address,
+                    DeviceId = identifierUUID
+                });
+            }
         }
 
         public class DeviceItem
@@ -112,6 +107,26 @@ namespace XamarinBluetoothScanner.Droid
                 view.FindViewById<ImageView>(Resource.Id.imageView1).SetBackgroundColor(item.Color);
 
                 return view;
+            }
+        }
+
+        private string ExtractBeaconUUID(string stringAdvertisementSpecificData)
+        {
+            string[] parse = stringAdvertisementSpecificData.Split("-");
+
+            if (parse.Count() < 60)
+            {
+                return stringAdvertisementSpecificData;
+            }
+            else
+            {
+                var parser = string.Format("{0}{1}{2}{3}-{4}{5}-{6}{7}-{8}{9}-{10}{11}{12}{13}{14}{15}",
+                                            parse[9], parse[10], parse[11], parse[12],
+                                            parse[13], parse[14],
+                                            parse[15], parse[16],
+                                            parse[17], parse[18],
+                                            parse[19], parse[20], parse[21], parse[22], parse[23], parse[24]);
+                return parser.ToString();
             }
         }
     }
