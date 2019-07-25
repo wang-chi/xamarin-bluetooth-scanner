@@ -8,5 +8,3 @@ Please remember to open permission on phone (/setting/application/<XamarinBlueto
 
 ### View
 ![init page](/init.png)
-![Record page](/record.png)
-![Sort by RSSI](/sort.png)
