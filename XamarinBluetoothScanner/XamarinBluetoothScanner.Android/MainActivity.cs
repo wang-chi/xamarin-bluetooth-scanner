@@ -47,6 +47,7 @@ namespace XamarinBluetoothScanner.Droid
             else
             {
                 _adapter.StartLeScan(this);
+                deviceItems.Clear();
                 _buttonScanBle.Text = "Stop Scan";
 
             }
@@ -116,12 +117,11 @@ namespace XamarinBluetoothScanner.Droid
                 View view = convertView;
                 if (view == null) // no view to re-use, create new
                     view = context.LayoutInflater.Inflate(Resource.Layout.list_item, null);
-                view.FindViewById<TextView>(Resource.Id.textView1).Text = item.DeviceName;
-                view.FindViewById<TextView>(Resource.Id.textView1).Text = item.DeviceId;
-                view.FindViewById<TextView>(Resource.Id.textView1).Text = item.DeviceAddress;
-                view.FindViewById<TextView>(Resource.Id.textView1).Text = item.RSSI.ToString();
-
-                view.FindViewById<ImageView>(Resource.Id.imageView1).SetBackgroundColor(item.Color);
+                view.FindViewById<TextView>(Resource.Id.tv_Name).Text = item.DeviceName;
+                view.FindViewById<TextView>(Resource.Id.tv_UUID).Text = item.DeviceId;
+                view.FindViewById<TextView>(Resource.Id.tv_Address).Text = item.DeviceAddress;
+                view.FindViewById<TextView>(Resource.Id.tv_RSSI).Text = Math.Abs(item.RSSI).ToString();
+                //view.FindViewById<ImageView>(Resource.Id.imageView1).SetBackgroundColor(item.Color);
 
                 return view;
             }

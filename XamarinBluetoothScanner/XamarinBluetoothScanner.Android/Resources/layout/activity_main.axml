@@ -4,19 +4,34 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <Button
-        android:text="Start Scan"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/buttonSearchBle" />
-
-    <ListView
-        android:minWidth="25px"
-        android:minHeight="25px"
+    <LinearLayout
+        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/myListView"
-        android:isScrollContainer="true"
-         />
+        android:id="@+id/linearLayout2">
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/linearLayout1">
+            <Button
+                android:text="Start Scan"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="5"
+                android:id="@+id/btn_Search" />
+            <Button
+                android:text="Clean Record"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="5"
+                android:id="@+id/btn_Clean" />
+        </LinearLayout>
 
+        <ListView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/myListView"
+            android:isScrollContainer="true"/>
+    </LinearLayout>
 </RelativeLayout>
