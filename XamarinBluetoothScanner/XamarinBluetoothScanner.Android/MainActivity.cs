@@ -20,17 +20,19 @@ namespace XamarinBluetoothScanner.Droid
         ListView listview;
 
         private bool isScan = false;
+        private int _count = 0;
 
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
             SetContentView(Resource.Layout.activity_main);
+
             listview = FindViewById<ListView>(Resource.Id.myListView);
             _buttonScanBle = FindViewById<Button>(Resource.Id.buttonSearchBle);
             _buttonScanBle.Click += btnScanDevice;
-
-            this._manager = (BluetoothManager)this.GetSystemService("bluetooth");
-            this._adapter = this._manager.Adapter;
+            var appContext = Android.App.Application.Context;
+            _manager = (BluetoothManager)appContext.GetSystemService("bluetooth");
+            _adapter = _manager.Adapter;
 
             listview.Adapter = new DeviceAdapter(this, deviceItems);
         }
@@ -39,12 +41,12 @@ namespace XamarinBluetoothScanner.Droid
         {
             if (isScan)
             {
-                this._adapter.StopLeScan(this);
+                _adapter.StopLeScan(this);
                 _buttonScanBle.Text = "Start Scan";
             }
             else
             {
-                this._adapter.StartLeScan(this);
+                _adapter.StartLeScan(this);
                 _buttonScanBle.Text = "Stop Scan";
 
             }
@@ -55,14 +57,24 @@ namespace XamarinBluetoothScanner.Droid
         {
             string tempUUID = BitConverter.ToString(scanRecord);
             string identifierUUID = ExtractBeaconUUID(tempUUID);
-            Console.WriteLine("\n >> Find A Beacon[{0}] Id:{1}; RSSI:{2}; Record:{3}\n", 0, bleDevice.Address, rssi, identifierUUID);
+
+            _count = _count + 1;
+
+            Console.WriteLine("\n >> Find A Beacon[{0}] Id:{1}; RSSI:{2}; Record:{3}\n", _count, bleDevice.Address, rssi, identifierUUID);
             if (identifierUUID.Length >= 36)
             {
-                deviceItems.Add(new DeviceItem()
+                if (!DeviceExistsInDiscoveredList(bleDevice))
                 {
-                    DeviceName = bleDevice.Address,
-                    DeviceId = identifierUUID
-                });
+                    deviceItems.Add(new DeviceItem()
+                    {
+                        DeviceName = bleDevice.Name,
+                        DeviceId = identifierUUID,
+                        DeviceAddress = bleDevice.Address,
+                        RSSI = rssi
+                    });
+                    listview.Adapter = new DeviceAdapter(this, deviceItems);
+                }
+
             }
         }
 
@@ -70,6 +82,8 @@ namespace XamarinBluetoothScanner.Droid
         {
             public string DeviceName { get; set; }
             public string DeviceId { get; set; }
+            public string DeviceAddress { get; set; }
+            public int RSSI { get; set; }
             public Android.Graphics.Color Color { get; set; }
         }
 
@@ -103,7 +117,10 @@ namespace XamarinBluetoothScanner.Droid
                 if (view == null) // no view to re-use, create new
                     view = context.LayoutInflater.Inflate(Resource.Layout.list_item, null);
                 view.FindViewById<TextView>(Resource.Id.textView1).Text = item.DeviceName;
-                view.FindViewById<TextView>(Resource.Id.textView2).Text = item.DeviceId;
+                view.FindViewById<TextView>(Resource.Id.textView1).Text = item.DeviceId;
+                view.FindViewById<TextView>(Resource.Id.textView1).Text = item.DeviceAddress;
+                view.FindViewById<TextView>(Resource.Id.textView1).Text = item.RSSI.ToString();
+
                 view.FindViewById<ImageView>(Resource.Id.imageView1).SetBackgroundColor(item.Color);
 
                 return view;
@@ -128,6 +145,16 @@ namespace XamarinBluetoothScanner.Droid
                                             parse[19], parse[20], parse[21], parse[22], parse[23], parse[24]);
                 return parser.ToString();
             }
+        }
+
+        protected bool DeviceExistsInDiscoveredList(BluetoothDevice device)
+        {
+            foreach (var d in deviceItems)
+            {
+                if (device.Address == d.DeviceAddress)
+                    return true;
+            }
+            return false;
         }
     }
 }
