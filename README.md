@@ -5,3 +5,8 @@ This repo only show bluetooth device scanner on Android
 
 ### Usage
 Please remember to open permission on phone (/setting/application/<XamarinBluetoothScanner>)
+
+### View
+![init page](/init.png)
+![Record page](/record.png)
+![Sort by RSSI](/sort.png)
