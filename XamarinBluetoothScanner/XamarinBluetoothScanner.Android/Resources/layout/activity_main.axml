@@ -18,14 +18,20 @@
                 android:text="Start Scan"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="5"
+                android:layout_weight="3"
                 android:id="@+id/btn_Search" />
             <Button
-                android:text="Clean Record"
+                android:text="Clean"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="5"
+                android:layout_weight="3"
                 android:id="@+id/btn_Clean" />
+             <Button
+                android:text="Sort"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                android:id="@+id/btn_Sort" />
         </LinearLayout>
 
         <ListView

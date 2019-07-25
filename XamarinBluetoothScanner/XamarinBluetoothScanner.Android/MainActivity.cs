@@ -13,7 +13,7 @@ namespace XamarinBluetoothScanner.Droid
     [Activity(Label = "XamarinBluetoothScanner", Icon = "@mipmap/icon", Theme = "@style/MainTheme", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation)]
     public class MainActivity : Activity, BluetoothAdapter.ILeScanCallback
     {
-        Button _btnScanBle, _btnClean;
+        Button _btnScanBle, _btnClean, _btnSort;
         protected BluetoothAdapter _adapter;
         protected BluetoothManager _manager;
         List<DeviceItem> deviceItems = new List<DeviceItem>();
@@ -30,9 +30,11 @@ namespace XamarinBluetoothScanner.Droid
             listview = FindViewById<ListView>(Resource.Id.myListView);
             _btnScanBle = FindViewById<Button>(Resource.Id.btn_Search);
             _btnClean = FindViewById<Button>(Resource.Id.btn_Clean);
+            _btnSort = FindViewById<Button>(Resource.Id.btn_Sort);
 
             _btnScanBle.Click += btnScanDevice;
             _btnClean.Click += btnCleanRecord;
+            _btnSort.Click += btnSortRecord;
 
             var appContext = Android.App.Application.Context;
             _manager = (BluetoothManager)appContext.GetSystemService("bluetooth");
@@ -62,7 +64,12 @@ namespace XamarinBluetoothScanner.Droid
         {
             deviceItems.Clear();
             listview.Adapter = new DeviceAdapter(this, deviceItems);
+        }
 
+        public void btnSortRecord(object sender, EventArgs e)
+        {
+            deviceItems.Sort((x,y)=> { return -x.RSSI.CompareTo(y.RSSI); });
+            listview.Adapter = new DeviceAdapter(this, deviceItems);
         }
 
         public void OnLeScan(BluetoothDevice bleDevice, int rssi, byte[] scanRecord)
@@ -130,8 +137,6 @@ namespace XamarinBluetoothScanner.Droid
                 view.FindViewById<TextView>(Resource.Id.tv_UUID).Text = item.DeviceId;
                 view.FindViewById<TextView>(Resource.Id.tv_Address).Text = item.DeviceAddress;
                 view.FindViewById<TextView>(Resource.Id.tv_RSSI).Text = Math.Abs(item.RSSI).ToString();
-                //view.FindViewById<ImageView>(Resource.Id.imageView1).SetBackgroundColor(item.Color);
-
                 return view;
             }
         }
@@ -154,16 +159,6 @@ namespace XamarinBluetoothScanner.Droid
                                             parse[19], parse[20], parse[21], parse[22], parse[23], parse[24]);
                 return parser.ToString();
             }
-        }
-
-        protected bool DeviceExistsInDiscoveredList(BluetoothDevice device)
-        {
-            foreach (var d in deviceItems)
-            {
-                if (device.Address == d.DeviceAddress)
-                    return true;
-            }
-            return false;
         }
     }
 }
