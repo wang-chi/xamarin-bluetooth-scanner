@@ -13,7 +13,7 @@ namespace XamarinBluetoothScanner.Droid
     [Activity(Label = "XamarinBluetoothScanner", Icon = "@mipmap/icon", Theme = "@style/MainTheme", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation)]
     public class MainActivity : Activity, BluetoothAdapter.ILeScanCallback
     {
-        Button _buttonScanBle;
+        Button _btnScanBle, _btnClean;
         protected BluetoothAdapter _adapter;
         protected BluetoothManager _manager;
         List<DeviceItem> deviceItems = new List<DeviceItem>();
@@ -28,8 +28,12 @@ namespace XamarinBluetoothScanner.Droid
             SetContentView(Resource.Layout.activity_main);
 
             listview = FindViewById<ListView>(Resource.Id.myListView);
-            _buttonScanBle = FindViewById<Button>(Resource.Id.buttonSearchBle);
-            _buttonScanBle.Click += btnScanDevice;
+            _btnScanBle = FindViewById<Button>(Resource.Id.btn_Search);
+            _btnClean = FindViewById<Button>(Resource.Id.btn_Clean);
+
+            _btnScanBle.Click += btnScanDevice;
+            _btnClean.Click += btnCleanRecord;
+
             var appContext = Android.App.Application.Context;
             _manager = (BluetoothManager)appContext.GetSystemService("bluetooth");
             _adapter = _manager.Adapter;
@@ -42,16 +46,23 @@ namespace XamarinBluetoothScanner.Droid
             if (isScan)
             {
                 _adapter.StopLeScan(this);
-                _buttonScanBle.Text = "Start Scan";
+                _btnScanBle.Text = "Start Scan";
             }
             else
             {
                 _adapter.StartLeScan(this);
                 deviceItems.Clear();
-                _buttonScanBle.Text = "Stop Scan";
+                _btnScanBle.Text = "Stop Scan";
 
             }
             isScan = !isScan;
+        }
+
+        public void btnCleanRecord(object sender, EventArgs e)
+        {
+            deviceItems.Clear();
+            listview.Adapter = new DeviceAdapter(this, deviceItems);
+
         }
 
         public void OnLeScan(BluetoothDevice bleDevice, int rssi, byte[] scanRecord)
@@ -64,18 +75,16 @@ namespace XamarinBluetoothScanner.Droid
             Console.WriteLine("\n >> Find A Beacon[{0}] Id:{1}; RSSI:{2}; Record:{3}\n", _count, bleDevice.Address, rssi, identifierUUID);
             if (identifierUUID.Length >= 36)
             {
-                if (!DeviceExistsInDiscoveredList(bleDevice))
+                if (deviceItems.Exists(x => x.DeviceAddress == bleDevice.Address))
+                    deviceItems.RemoveAt(deviceItems.FindIndex(x => x.DeviceAddress == bleDevice.Address));
+                deviceItems.Add(new DeviceItem()
                 {
-                    deviceItems.Add(new DeviceItem()
-                    {
-                        DeviceName = bleDevice.Name,
-                        DeviceId = identifierUUID,
-                        DeviceAddress = bleDevice.Address,
-                        RSSI = rssi
-                    });
-                    listview.Adapter = new DeviceAdapter(this, deviceItems);
-                }
-
+                    DeviceName = String.IsNullOrEmpty(bleDevice.Name) ? null : bleDevice.Name.ToString().Trim(),
+                    DeviceId = identifierUUID,
+                    DeviceAddress = bleDevice.Address,
+                    RSSI = rssi
+                });
+                listview.Adapter = new DeviceAdapter(this, deviceItems);
             }
         }
 
