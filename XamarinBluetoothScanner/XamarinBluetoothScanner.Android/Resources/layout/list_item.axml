@@ -61,6 +61,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/tv_UUID" />
+        <TextView
+            android:text="00:00:00"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/tv_UpdateTime" />
     </LinearLayout>
 
 </LinearLayout>

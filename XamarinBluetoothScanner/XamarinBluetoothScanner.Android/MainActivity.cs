@@ -89,7 +89,8 @@ namespace XamarinBluetoothScanner.Droid
                     DeviceName = String.IsNullOrEmpty(bleDevice.Name) ? null : bleDevice.Name.ToString().Trim(),
                     DeviceId = identifierUUID,
                     DeviceAddress = bleDevice.Address,
-                    RSSI = rssi
+                    RSSI = rssi,
+                    UpdateTime = DateTime.Now
                 });
                 listview.Adapter = new DeviceAdapter(this, deviceItems);
             }
@@ -101,6 +102,7 @@ namespace XamarinBluetoothScanner.Droid
             public string DeviceId { get; set; }
             public string DeviceAddress { get; set; }
             public int RSSI { get; set; }
+            public DateTime UpdateTime { get; set; }
             public Android.Graphics.Color Color { get; set; }
         }
 
@@ -137,6 +139,7 @@ namespace XamarinBluetoothScanner.Droid
                 view.FindViewById<TextView>(Resource.Id.tv_UUID).Text = item.DeviceId;
                 view.FindViewById<TextView>(Resource.Id.tv_Address).Text = item.DeviceAddress;
                 view.FindViewById<TextView>(Resource.Id.tv_RSSI).Text = Math.Abs(item.RSSI).ToString();
+                view.FindViewById<TextView>(Resource.Id.tv_UpdateTime).Text = item.UpdateTime;
                 return view;
             }
         }
