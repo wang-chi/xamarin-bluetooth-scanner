@@ -90,7 +90,7 @@ namespace XamarinBluetoothScanner.Droid
                     DeviceId = identifierUUID,
                     DeviceAddress = bleDevice.Address,
                     RSSI = rssi,
-                    UpdateTime = DateTime.Now
+                    UpdateTime = DateTime.Now.ToString("yyyy-MM-dd HH：mm：ss：ffff")
                 });
                 listview.Adapter = new DeviceAdapter(this, deviceItems);
             }
@@ -102,7 +102,7 @@ namespace XamarinBluetoothScanner.Droid
             public string DeviceId { get; set; }
             public string DeviceAddress { get; set; }
             public int RSSI { get; set; }
-            public DateTime UpdateTime { get; set; }
+            public string UpdateTime { get; set; }
             public Android.Graphics.Color Color { get; set; }
         }
 
