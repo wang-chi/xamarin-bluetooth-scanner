@@ -1,9 +1,13 @@
-﻿using Android.App;
+﻿using Android;
+using Android.App;
 using Android.Bluetooth;
 using Android.Content.PM;
 using Android.OS;
+using Android.Support.V4.App;
+using Android.Support.V4.Content;
 using Android.Views;
 using Android.Widget;
+using Plugin.Permissions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,6 +30,9 @@ namespace XamarinBluetoothScanner.Droid
         {
             base.OnCreate(savedInstanceState);
             SetContentView(Resource.Layout.activity_main);
+            global::Xamarin.Forms.Forms.Init(this, savedInstanceState);
+            Plugin.CurrentActivity.CrossCurrentActivity.Current.Init(this, savedInstanceState);
+
 
             listview = FindViewById<ListView>(Resource.Id.myListView);
             _btnScanBle = FindViewById<Button>(Resource.Id.btn_Search);
@@ -41,10 +48,21 @@ namespace XamarinBluetoothScanner.Droid
             _adapter = _manager.Adapter;
 
             listview.Adapter = new DeviceAdapter(this, deviceItems);
+            if (ContextCompat.CheckSelfPermission(this, Manifest.Permission.AccessCoarseLocation) != Permission.Granted)
+            {
+                ActivityCompat.RequestPermissions(this, new String[] { Manifest.Permission.AccessCoarseLocation, Manifest.Permission.AccessFineLocation }, 0);
+            }
+            else
+            {
+                System.Diagnostics.Debug.WriteLine("Permission Granted!!!");
+            }
         }
+
+       
 
         public void btnScanDevice(object sender, EventArgs e)
         {
+            
             if (isScan)
             {
                 _adapter.StopLeScan(this);
@@ -68,7 +86,7 @@ namespace XamarinBluetoothScanner.Droid
 
         public void btnSortRecord(object sender, EventArgs e)
         {
-            deviceItems.Sort((x,y)=> { return -x.RSSI.CompareTo(y.RSSI); });
+            deviceItems.Sort((x, y) => { return -x.RSSI.CompareTo(y.RSSI); });
             listview.Adapter = new DeviceAdapter(this, deviceItems);
         }
 
@@ -163,5 +181,6 @@ namespace XamarinBluetoothScanner.Droid
                 return parser.ToString();
             }
         }
+            
     }
 }
