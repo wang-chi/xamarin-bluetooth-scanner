@@ -10,7 +10,6 @@ using Android.Widget;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using DisplayAlert = Xamarin.Forms;
 
 namespace XamarinBluetoothScanner.Droid
 {
@@ -30,10 +29,7 @@ namespace XamarinBluetoothScanner.Droid
         {
             base.OnCreate(savedInstanceState);
             SetContentView(Resource.Layout.activity_main);
-            global::Xamarin.Forms.Forms.Init(this, savedInstanceState);
-            Plugin.CurrentActivity.CrossCurrentActivity.Current.Init(this, savedInstanceState);
-
-
+           
             listview = FindViewById<ListView>(Resource.Id.myListView);
             _btnScanBle = FindViewById<Button>(Resource.Id.btn_Search);
             _btnClean = FindViewById<Button>(Resource.Id.btn_Clean);
@@ -81,7 +77,6 @@ namespace XamarinBluetoothScanner.Droid
                 .SetMessage(msg)
                 .SetPositiveButton("OK", (senderAlert, args) => { });
             alert.Create().Show();
-            //Application.Current.MainPage.DisplayAlert("Alert", msg, "OK");
         }
 
         public void btnScanDevice(object sender, EventArgs e)
