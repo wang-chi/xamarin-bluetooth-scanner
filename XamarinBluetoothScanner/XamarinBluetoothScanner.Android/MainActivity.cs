@@ -7,10 +7,10 @@ using Android.Support.V4.App;
 using Android.Support.V4.Content;
 using Android.Views;
 using Android.Widget;
-using Plugin.Permissions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using DisplayAlert = Xamarin.Forms;
 
 namespace XamarinBluetoothScanner.Droid
 {
@@ -45,6 +45,7 @@ namespace XamarinBluetoothScanner.Droid
 
             var appContext = Android.App.Application.Context;
             _manager = (BluetoothManager)appContext.GetSystemService("bluetooth");
+            _manager.Adapter.Enable();
             _adapter = _manager.Adapter;
 
             listview.Adapter = new DeviceAdapter(this, deviceItems);
@@ -56,13 +57,36 @@ namespace XamarinBluetoothScanner.Droid
             {
                 System.Diagnostics.Debug.WriteLine("Permission Granted!!!");
             }
+
+            listview.ItemClick += Listview_ItemClick;
         }
 
-       
+        private void Listview_ItemClick(object sender, AdapterView.ItemClickEventArgs e)
+        {
+            DeviceItem deviceItem = deviceItems[e.Position];
+            string msg = "Device Id: \n" + deviceItem.DeviceId + "\n" +
+                         "Device Name: " + deviceItem.DeviceName + "\n" +
+                         "Device Address: " + deviceItem.DeviceAddress + "\n" +
+                         "Device Major: " + deviceItem.DeviceMajor + "\n" +
+                         "Device Minor: " + deviceItem.DeviceMinor + "\n" +
+                         "Device TXPower: " + deviceItem.TXPower + "\n" +
+                         "Device CompanyID: " + deviceItem.CompanyID + "\n" +
+                         "Device AdvFlags: " + deviceItem.AdvFlags + "\n" +
+                         "Device AdvHeader: " + deviceItem.AdvHeader + "\n" +
+                         "Device BeaconType: " + deviceItem.BeaconType + "\n" +
+                         "Device BeaconLength: " + deviceItem.BeaconLength + "\n" +
+                         "Device Time: \n" + deviceItem.UpdateTime + "\n";
+            AlertDialog.Builder alert = new AlertDialog.Builder(this)
+                .SetTitle("Device info")
+                .SetMessage(msg)
+                .SetPositiveButton("OK", (senderAlert, args) => { });
+            alert.Create().Show();
+            //Application.Current.MainPage.DisplayAlert("Alert", msg, "OK");
+        }
 
         public void btnScanDevice(object sender, EventArgs e)
         {
-            
+
             if (isScan)
             {
                 _adapter.StopLeScan(this);
@@ -93,20 +117,28 @@ namespace XamarinBluetoothScanner.Droid
         public void OnLeScan(BluetoothDevice bleDevice, int rssi, byte[] scanRecord)
         {
             string tempUUID = BitConverter.ToString(scanRecord);
-            string identifierUUID = ExtractBeaconUUID(tempUUID);
+            DeviceItem deviceItem = ExtractBeaconUUID(tempUUID);
 
             _count = _count + 1;
 
-            Console.WriteLine("\n >> Find A Beacon[{0}] Id:{1}; RSSI:{2}; Record:{3}\n", _count, bleDevice.Address, rssi, identifierUUID);
-            if (identifierUUID.Length >= 36)
+            Console.WriteLine("\n >> Find A Beacon[{0}] Id:{1}; RSSI:{2}; Record:{3}\n", _count, bleDevice.Address, rssi, deviceItem.DeviceId);
+            if (deviceItem.DeviceId.Length >= 36)
             {
                 if (deviceItems.Exists(x => x.DeviceAddress == bleDevice.Address))
                     deviceItems.RemoveAt(deviceItems.FindIndex(x => x.DeviceAddress == bleDevice.Address));
                 deviceItems.Add(new DeviceItem()
                 {
                     DeviceName = String.IsNullOrEmpty(bleDevice.Name) ? null : bleDevice.Name.ToString().Trim(),
-                    DeviceId = identifierUUID,
+                    DeviceId = deviceItem.DeviceId,
                     DeviceAddress = bleDevice.Address,
+                    DeviceMajor = deviceItem.DeviceMajor,
+                    DeviceMinor = deviceItem.DeviceMinor,
+                    TXPower = Int32.Parse(deviceItem.TXPower, System.Globalization.NumberStyles.HexNumber).ToString(),
+                    AdvFlags = deviceItem.AdvFlags,
+                    AdvHeader = deviceItem.AdvHeader,
+                    CompanyID = deviceItem.CompanyID,
+                    BeaconType = deviceItem.BeaconType,
+                    BeaconLength = deviceItem.BeaconLength,
                     RSSI = rssi,
                     UpdateTime = DateTime.Now.ToString("yyyy-MM-dd HH：mm：ss：ffff")
                 });
@@ -121,6 +153,14 @@ namespace XamarinBluetoothScanner.Droid
             public string DeviceAddress { get; set; }
             public int RSSI { get; set; }
             public string UpdateTime { get; set; }
+            public string DeviceMajor { get; set; }
+            public string DeviceMinor { get; set; }
+            public string TXPower { get; set; }
+            public string AdvFlags { get; set; }
+            public string AdvHeader { get; set; }
+            public string CompanyID { get; set; }
+            public string BeaconType { get; set; }
+            public string BeaconLength { get; set; }
             public Android.Graphics.Color Color { get; set; }
         }
 
@@ -162,25 +202,35 @@ namespace XamarinBluetoothScanner.Droid
             }
         }
 
-        private string ExtractBeaconUUID(string stringAdvertisementSpecificData)
+        private DeviceItem ExtractBeaconUUID(string stringAdvertisementSpecificData)
         {
+            DeviceItem deviceItem = new DeviceItem();
             string[] parse = stringAdvertisementSpecificData.Split("-");
 
             if (parse.Count() < 60)
             {
-                return stringAdvertisementSpecificData;
+                deviceItem.DeviceId = stringAdvertisementSpecificData;
             }
             else
             {
+                deviceItem.AdvFlags = string.Format("{0}{1}{2}", parse[0], parse[1], parse[2]);
+                deviceItem.AdvHeader = string.Format("{0}{1}", parse[3], parse[4]);
+                deviceItem.CompanyID = string.Format("{0}{1}", parse[5], parse[6]);
+                deviceItem.BeaconType = string.Format("{0}", parse[7]);
+                deviceItem.BeaconLength = string.Format("{0}", parse[8]);
                 var parser = string.Format("{0}{1}{2}{3}-{4}{5}-{6}{7}-{8}{9}-{10}{11}{12}{13}{14}{15}",
                                             parse[9], parse[10], parse[11], parse[12],
                                             parse[13], parse[14],
                                             parse[15], parse[16],
                                             parse[17], parse[18],
                                             parse[19], parse[20], parse[21], parse[22], parse[23], parse[24]);
-                return parser.ToString();
+                deviceItem.DeviceId = parser.ToString();
+                deviceItem.DeviceMajor = string.Format("{0}{1}", parse[25], parse[26]);
+                deviceItem.DeviceMinor = string.Format("{0}{1}", parse[27], parse[28]);
+                deviceItem.TXPower = string.Format("{0}", parse[29]);
             }
+            return deviceItem;
         }
-            
+
     }
 }
