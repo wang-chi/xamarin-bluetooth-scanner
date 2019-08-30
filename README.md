@@ -1,4 +1,6 @@
-# xamarin-bluetooth-scanner
+# Xamarin Bluetooth Scanner
+This project is for scanning bluetooth device and get this data.
+
 ## Plugin
 using **Plugin.BLE** to scan bluetooth device
 
@@ -15,13 +17,3 @@ Please allow the permission first time to make sure app is working.
 
 ## View
 ![init page](/init.png)
-
-### Init
-
-### Start Scan
-
-### Stop Scan
-
-### Sort
-
-### Clean
