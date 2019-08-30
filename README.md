@@ -1,10 +1,15 @@
 # xamarin-bluetooth-scanner
-using Plugin.BLE to scan bluetooth device
-The template is following about https://docs.microsoft.com/zh-tw/xamarin/android/user-interface/android-designer/designer-walkthrough?tabs=windows
-This repo only show bluetooth device scanner on Android
+## Plugin
+using **Plugin.BLE** to scan bluetooth device
 
-### Usage
-Please remember to open permission on phone (/setting/application/<XamarinBluetoothScanner>)
+## Template
+The template is following about https://docs.microsoft.com/zh-tw/xamarin/android/user-interface/android-designer/designer-walkthrough?tabs=windows
+
+## Platform
+Although this repo use Xamarin Cross-platform structure but it only shows bluetooth device scanner on Android.
+
+### Permission
+Please allow the permission first time to make sure app is working.
 
 ### View
 ![init page](/init.png)
