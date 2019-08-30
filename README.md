@@ -8,8 +8,20 @@ The template is following about https://docs.microsoft.com/zh-tw/xamarin/android
 ## Platform
 Although this repo use Xamarin Cross-platform structure but it only shows bluetooth device scanner on Android.
 
-### Permission
+## Permission
 Please allow the permission first time to make sure app is working.
+* Bluetooth
+* AccessCoarseLocation & AccessFineLocation
 
-### View
+## View
 ![init page](/init.png)
+
+### Init
+
+### Start Scan
+
+### Stop Scan
+
+### Sort
+
+### Clean
